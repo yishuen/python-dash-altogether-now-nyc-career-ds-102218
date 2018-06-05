@@ -17,4 +17,6 @@ app.server.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 # connect flask_sqlalchemy to the configured flask app
 db = SQLAlchemy(app.server)
 
+from dashaltogethernow import dash_layout
+
 from dashaltogethernow import routes

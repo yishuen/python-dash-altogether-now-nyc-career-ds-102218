@@ -12,7 +12,7 @@ class City(db.Model):
     __tablename__ = 'cities'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
-    type = db.Column(db.String(30), nullable=True)
+    type = db.Column(db.String(30))
     zip_code = db.Column(db.Integer)
     lat = db.Column(db.Integer)
     lng = db.Column(db.Integer)
@@ -23,8 +23,6 @@ class City(db.Model):
 class Demographic(db.Model):
     __tablename__ = 'demographics'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), nullable=False)
-    type = db.Column(db.String(30), nullable=True)
     population = db.Column(db.Integer)
     male_pop = db.Column(db.Integer)
     female_pop = db.Column(db.Integer)
