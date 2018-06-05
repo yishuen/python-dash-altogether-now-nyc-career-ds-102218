@@ -5,7 +5,7 @@ class State(db.Model):
     __tablename__ = 'states'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
-    abrev = db.Column(db.String(3), nullable=False)
+    state_ab = db.Column(db.String(3), nullable=False)
     cities = db.relationship('City', backref='cities', lazy=True)
 
 class City(db.Model):
@@ -18,10 +18,7 @@ class City(db.Model):
     lng = db.Column(db.Integer)
     state = db.relationship('State', back_populates="cities")
     state_id = db.Column(db.Integer, db.ForeignKey('states.id'), nullable=False)
-    demographics = db.relationship('Demographics', backref='demographics', lazy=True)
-    def to_dict(self):
-        tweet = {'id': self.id, 'text': self.text, 'user_id': self.user.id, 'user': self.user.username}
-        return tweet
+    demographics = db.relationship('Demographic', backref='demographics', lazy=True)
 
 class Demographic(db.Model):
     __tablename__ = 'demographics'
@@ -36,6 +33,3 @@ class Demographic(db.Model):
     pct_married = db.Column(db.Integer)
     city = db.relationship('City', back_populates="demographics")
     city_id = db.Column(db.Integer, db.ForeignKey('cities.id'), nullable=False)
-    def to_dict(self):
-        tweet = {'id': self.id, 'text': self.text, 'user_id': self.user.id, 'user': self.user.username}
-        return tweet
