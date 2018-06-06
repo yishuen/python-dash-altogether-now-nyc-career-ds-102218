@@ -1,5 +1,3 @@
-#import dash
-import dash
 #import dash core components as dcc
 import dash_core_components as dcc
 #import dash html components as html

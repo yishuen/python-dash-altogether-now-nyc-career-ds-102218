@@ -1,5 +1,5 @@
 from dashaltogethernow.models import State, City, Demographic, db
-from dashaltogethernow.us_housing_data import data
+from dashaltogethernow.real_estate_db import data
 
 def get_all_rows_for_city(city_name, state_name, city_data=data):
     cities_list = []
@@ -22,6 +22,9 @@ def mean_demograpic_attribute(city_rows_list, attribute):
     return attribute_mean
 
 def make_demographic_object(city_rows_list, city_id):
+    if list(Demographic.query.filter(Demographic.city_id == city_id)):
+        return Demographic.query.filter(Demographic.city_id == city_id)
+    else:
     base_instance = city_rows_list[0]
     aggregate_pop = aggregate_demograpic_attribute(city_rows_list, 'pop')
     aggregate_female_pop = aggregate_demograpic_attribute(city_rows_list, 'female_pop')
@@ -33,7 +36,10 @@ def make_demographic_object(city_rows_list, city_id):
 
 def make_city_object(city_rows_list, state_id):
     base_instance = city_rows_list[0]
-    return City(name=base_instance['city'], type=base_instance['type'], zip_code=base_instance['zip_code'], lat=base_instance['lat'], lng=base_instance['lng'], state_id=state_id)
+    if list(City.query.filter(City.name == base_instance['city'])):
+        return City.query.filter(City.name == base_instance['city']).first()
+    else:
+        return City(name=base_instance['city'], type=base_instance['type'], zip_code=base_instance['zip_code'], lat=base_instance['lat'], lng=base_instance['lng'], state_id=state_id)
 
 def make_state_object(city_rows_list):
     base_instance = city_rows_list[0]
@@ -57,7 +63,7 @@ def add_all_related_instances_by_state():
         new_city = make_city_object(city_rows_list, state.id)
         new_demographic = make_demographic_object(city_rows_list, new_city.id)
         state.cities.append(new_city)
-        new_city.demographics.append(new_demographic)
+        new_city.demographics. = new_demographic
         db.session.add(state)
         db.session.add(new_city)
     db.session.commit()
