@@ -18,7 +18,7 @@ class City(db.Model):
     lng = db.Column(db.Integer)
     state = db.relationship('State', back_populates="cities")
     state_id = db.Column(db.Integer, db.ForeignKey('states.id'), nullable=False)
-    demographics = db.relationship('Demographic', backref='demographics', lazy=True)
+    demographic = relationship('Demographic', uselist=False, back_populates="city")
 
 class Demographic(db.Model):
     __tablename__ = 'demographics'
@@ -29,5 +29,5 @@ class Demographic(db.Model):
     mean_rent = db.Column(db.Integer)
     pct_own = db.Column(db.Integer)
     pct_married = db.Column(db.Integer)
-    city = db.relationship('City', back_populates="demographics")
+    city = db.relationship('City', back_populates="demographic")
     city_id = db.Column(db.Integer, db.ForeignKey('cities.id'), nullable=False)

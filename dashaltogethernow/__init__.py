@@ -1,7 +1,3 @@
-# import requests module to make http requests
-import requests
-# import Flask, jsonify, render_template, and json from flask
-from flask import Flask
 # import SQLAlchemy from flask_sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 #import dash

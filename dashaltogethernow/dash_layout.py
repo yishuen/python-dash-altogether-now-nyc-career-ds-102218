@@ -4,12 +4,11 @@ import dash
 import dash_core_components as dcc
 #import dash html components as html
 import dash_html_components as html
-
-import plotly.graph_objs as go
 # import Input, Output from dash.dependencies for callback functions
 from dash.dependencies import Input, Output
 
 from dashaltogethernow import app
+
 from dashaltogethernow.models import db, City, Demographic, State
 
 def generate_pop_drop_down():
@@ -20,30 +19,39 @@ def generate_pop_drop_down():
         value="New Jersey"
     )
 
-def generate_bar_graphs(state="New Jersey"):
-    state_obj = State.query.filter(State.name == state).first()
-    all_cities = state_obj.cities
-    names = [city.name for city in all_cities]
-    populations = [city.demographics[0].population for city in all_cities]
-    return dcc.Graph(
-    id = "city_population_graph",
-    figure = {
-            'data': [{
-            'name': state_obj.name,
-            'x': names,
-            'y': populations,
-            'type': 'bar'
-            }],
-            'layout': {
-                'title': '{} Population Data'.format(state_obj.name)
-            }
-        }
-    )
+def create_pop_data_obj(list_of_cities, name):
+    sorted_cities = sorted(list_of_cities, key=lambda city: city.demographics[0].population)[-75:]
+    names = [city.name for city in sorted_cities]
+    populations = [city.demographics[0].population for city in sorted_cities]
+    return {'name': name, 'x': names, 'y': populations, 'type': 'bar'}
 
+def create_rent_data_obj(list_of_cities, name):
+    sorted_cities = sorted(list_of_cities, key=lambda city: city.demographics[0].population)[-75:]
+    names = [city.name for city in sorted_cities]
+    populations = [city.demographics[0].mean_rent for city in sorted_cities]
+    return {'name': name, 'x': names, 'y': populations, 'type': 'bar'}
+
+def get_all_cities(state_name):
+    state_obj = State.query.filter(State.name == state_name).first()
+    return state_obj.cities
+
+def create_graph(data, comparison):
+    return dcc.Graph(id = "city_population_graph_{}".format(data['name']), figure = { 'data': [data],'layout': { 'title': '{} - {} per City'.format(data['name'], comparison)}})
+
+def generate_pop_bar_graph(state):
+    all_cities = get_all_cities(state)
+    data = create_pop_data_obj(all_cities, state)
+    return create_graph(data, 'Population')
+
+def generate_rent_bar_graph(state):
+    all_cities = get_all_cities(state)
+    data = create_rent_data_obj(all_cities, state)
+    return create_graph(data, 'Mean Rent')
 
 app.layout = html.Div(children=[
     generate_pop_drop_down(),
     html.Div(id='pop_graph_container'),
+    html.Div(id='rent_graph_container'),
 ])
 
 @app.callback(
@@ -51,4 +59,11 @@ app.layout = html.Div(children=[
     [Input(component_id='state_selector', component_property='value')]
 )
 def change_table(input_value):
-    return generate_bar_graphs(input_value)
+    return generate_pop_bar_graph(input_value)
+
+@app.callback(
+    Output(component_id='rent_graph_container', component_property='children'),
+    [Input(component_id='state_selector', component_property='value')]
+)
+def change_table(input_value):
+    return generate_rent_bar_graph(input_value)
