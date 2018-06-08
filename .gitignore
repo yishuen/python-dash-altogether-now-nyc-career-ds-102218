@@ -35,4 +35,3 @@ jspm_packages
 *.ipynb_checkpoints
 .DS_Store
 __pycache__
-*.db
