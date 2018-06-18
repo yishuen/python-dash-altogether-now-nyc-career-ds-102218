@@ -36,7 +36,7 @@ def make_demographic_object(city_rows_list, city_id):
 
 def make_city_object(city_rows_list, state_id):
     base_instance = city_rows_list[0]
-    if list(City.query.filter(City.name == city_rows_list[0]['city'], City.state_id == state_id)):
+    if list(City.query.filter(City.name == base_instance['city'], City.state_id == state_id)):
         return City.query.filter(City.name == base_instance['city']).first()
     else:
         return City(name=base_instance['city'], type=base_instance['type'], zip_code=base_instance['zip_code'], lat=base_instance['lat'], lng=base_instance['lng'], state_id=state_id)

@@ -69,22 +69,22 @@ Next, read the excel file with pandas and pass in a second argument, `names`, to
 names = ["UID", "BLOCKID", "SUMLEVEL", "COUNTYID", "STATEID", "state", "state_ab", "city", "place", "type", "primary", "zip_code", "area_code", "lat", "lng", "ALand", "AWater", "pop", "male_pop", "female_pop", "rent_mean", "rent_median", "rent_stdev", "rent_sample_weight", "rent_samples", "rent_gt_10", "rent_gt_15", "rent_gt_20", "rent_gt_25", "rent_gt_30", "rent_gt_35", "rent_gt_40", "rent_gt_50", "universe_samples", "used_samples", "hi_mean", "hi_median", "hi_stdev", "hi_sample_weight", "hi_samples", "family_mean", "family_median", "family_stdev", "family_sample_weight", "family_samples", "hc_mortgage_mean", "hc_mortgage_median", "hc_mortgage_stdev", "hc_mortgage_sample_weight", "hc_mortgage_samples", "hc_mean", "hc_median", "hc_stdev", "hc_samples", "hc_sample_weight", "home_equity_second_mortgage", "second_mortgage", "home_equity", "debt", "second_mortgage_cdf", "home_equity_cdf", "debt_cdf", "hs_degree", "hs_degree_male", "hs_degree_female", "male_age_mean", "male_age_median", "male_age_stdev", "male_age_sample_weight", "male_age_samples", "female_age_mean", "female_age_median", "female_age_stdev", "female_age_sample_weight", "female_age_samples", "pct_own", "married", "married_snp", "separated", "divorced"]
 ```
 
-Assign the return value of the read_excel function, which is a dataframe, to a variable such as `excel_data`. Once the dataframe object comes back we will want to call the `fillna` function on it so that we can be sure we do not have any cells that contain the datatype `NaN`.
+Assign the return value of the read_excel function, which is a dataframe, to a variable such as `excel_data`. Once the dataframe object comes back we will want to call the `dropna` function on it so that we can remove any rows whose cells in the 'pop' and 'rent_mean' columns that have the datatype `NaN`.
 
 ```python
-# fills any value that is NaN with the float 0.0
-excel_data.fillna(value=0.0)
+# call dropna on excel_data to remove rows (axis=0) with NaN for the columns 'pop' and 'rent_mean' subset=['pop', 'rent_mean']
+clean_data = excel_data.dropna(axis=0, subset=['pop', 'rent_mean'])
 ```
 
-If a cell doesn't contain a string of text, that will usually be okay and not cause our program to break. However, if we have cells that are missing number values, these can cause our functions to error out due to breaking operations such as trying to sum an integer and `NaN`.
+If a cell doesn't contain a string of text, that will usually be okay and not cause our program to break. However, if we have cells that are missing number values, these can cause our functions to error out due to breaking operations such as trying to sum an integer and `NaN`. 
 
-Finally, we will want to convert our `excel_data` using the pandas dataframe `.to_dict()` function.  Pass in the argument `'records'` so that our [return value is a list of dictionaries](https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_dict.html).  All of this should be assigned to a variable, `data`, which we will be able import to our other files to use and populate our database.
+Finally, we will want to convert our `clean_data` using the pandas dataframe `.to_dict()` function.  Pass in the argument `'records'` so that our [return value is a list of dictionaries](https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_dict.html).  All of this should be assigned to a variable, `data`, which we will be able import to our other files to use and populate our database.
 
 ## Using the ETL Pattern
 
-So far, we have successfully extracted our data. Now we are going to complete the ETL process by formatting (or transforming) our data from the format it came in from the excel file, and then using the formatted data to create objects in our database.
+So far, we have successfully extracted our data. Now we are going to complete the ETL process by formatting (or transforming) our data from the format it came in from the excel file, and then using the formatted data to create objects in our database. 
 
-First, we will need to import our data object we just finished creating in our `real_estate_db.py` file and then import our models and db object.
+First, we will need to import our data object we just finished creating in our `real_estate_db.py` file and then import our models and db object. 
 
 Looking at the format of the data will help to contextualize how we might begin to format our data and load it into the database. Since we have nearly 40,000 rows in our excel file, we can think about starting to aggregate some of this information. Since cities are broken up into boroughs or neighborhoods, we need to figure out how to iterate through our data to only create one city and the demographics for that city will be an aggregate or average of the information for each part of a given city. For example, in lieu of creating demographics for New York's 5 Boroughs, Staten Island, Queens, The Bronx, Brooklyn, and Manhattan, we will aggregate or average the demographic individual statistics into one and then use the calculated totals and averages to create one demographic object for New York.
 
@@ -122,7 +122,7 @@ We will need to import our Dash core components, html components, and dependenci
 Our end goal is to have graphs that look something like this:
 ![dashaltogether preview](./dashaltogether_preview.png)
 
-Start by creating a layout that generates a graph that shows the total population for each city in "New Jersey".
+Start by creating a layout that generates a graph that shows the total population for each city in "New Jersey". 
 
 Then create a function that creates and returns this graph for you. Next, add an html component that acts as a container for the population bar graph. Additionally, we will want to add a dropdown menu with each states' name as an option. This is also a good opportunity to create a function that creates the dropdown for us.
 
