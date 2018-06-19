@@ -8,13 +8,13 @@ def get_all_rows_for_city(city_name, state_name, city_data=data):
             cities_list.append(city)
     return cities_list
 
-def aggregate_demograpic_attribute(city_rows_list, attribute):
+def aggregate_demographic_attribute(city_rows_list, attribute):
     attribute_sum = 0.0
     for city in city_rows_list:
         attribute_sum += float(city[attribute])
     return attribute_sum
 
-def mean_demograpic_attribute(city_rows_list, attribute):
+def mean_demographic_attribute(city_rows_list, attribute):
     attribute_sum = 0.0
     for city in city_rows_list:
         attribute_sum += float(city[attribute])
@@ -26,12 +26,12 @@ def make_demographic_object(city_rows_list, city_id):
         return Demographic.query.filter(Demographic.city_id == city_id).first()
     else:
         base_instance = city_rows_list[0]
-        aggregate_pop = aggregate_demograpic_attribute(city_rows_list, 'pop')
-        aggregate_female_pop = aggregate_demograpic_attribute(city_rows_list, 'female_pop')
-        aggregate_male_pop = aggregate_demograpic_attribute(city_rows_list, 'male_pop')
-        mean_rent = mean_demograpic_attribute(city_rows_list, 'rent_mean')
-        mean_pct_own = mean_demograpic_attribute(city_rows_list, 'pct_own')
-        mean_pct_married = mean_demograpic_attribute(city_rows_list, 'married')
+        aggregate_pop = aggregate_demographic_attribute(city_rows_list, 'pop')
+        aggregate_female_pop = aggregate_demographic_attribute(city_rows_list, 'female_pop')
+        aggregate_male_pop = aggregate_demographic_attribute(city_rows_list, 'male_pop')
+        mean_rent = mean_demographic_attribute(city_rows_list, 'rent_mean')
+        mean_pct_own = mean_demographic_attribute(city_rows_list, 'pct_own')
+        mean_pct_married = mean_demographic_attribute(city_rows_list, 'married')
         return Demographic(population=aggregate_pop, male_pop=aggregate_male_pop, female_pop=aggregate_female_pop, mean_rent=mean_rent, pct_own=mean_pct_own, pct_married=mean_pct_married, city_id=city_id)
 
 def make_city_object(city_rows_list, state_id):

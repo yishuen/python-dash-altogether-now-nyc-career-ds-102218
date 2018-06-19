@@ -6,7 +6,7 @@ class State(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
     state_ab = db.Column(db.String(3), nullable=False)
-    cities = db.relationship('City', backref='cities', lazy=True)
+    cities = db.relationship('City', back_populates='state')
 
 class City(db.Model):
     __tablename__ = 'cities'

@@ -4,10 +4,9 @@ import dash_core_components as dcc
 import dash_html_components as html
 # import Input, Output from dash.dependencies for callback functions
 from dash.dependencies import Input, Output
-
 from dashaltogethernow import app
-
 from dashaltogethernow.models import db, City, Demographic, State
+
 
 def generate_pop_drop_down():
     states = [{'label': state.name, 'value': state.name} for state in State.query.all()]
